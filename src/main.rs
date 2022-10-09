@@ -1,4 +1,6 @@
-use image::{ImageBuffer};
+include!("./util.rs");
+
+use image::{ImageBuffer, Luma};
 
 fn main() {
     let img = image::open("src/images/formattedTable.jpg").unwrap();
@@ -14,12 +16,25 @@ fn main() {
         }
     }
 
+    let ball_locations = return_ball_locations(&new_image);
+
+    println!("{}", ball_locations.len());
+
     new_image.save("src/images/grayScale.jpg").unwrap();
 }
 
-/*
- *   Grayscale converter
- */
-fn img_to_gray_scale(img: &image::DynamicImage) -> image::GrayImage {
-    return image::imageops::grayscale(img);
+fn return_ball_locations(img: &ImageBuffer<Luma<u8>, Vec<u8>>) -> Vec<(u32, u32)> {
+    let mut ball_locations: Vec<(u32, u32)> = Vec::new();
+
+    for (x, y, pixel_luminocity) in img.enumerate_pixels() {
+        let white: u8 = 255;
+        if pixel_luminocity[0] < white {
+            ball_locations.push((x, y));
+        }
+    }
+
+    return ball_locations;
 }
+
+
+

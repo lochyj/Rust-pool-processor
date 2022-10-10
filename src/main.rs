@@ -1,10 +1,20 @@
+mod util;
+
 include!("./util.rs");
 
-use image::{ImageBuffer, Luma, GenericImageView};
+use image::{ImageBuffer, Luma};
+
+
 
 fn main() {
+    // Image file location
+    /* Old:
+    * src/images/formattedTable.jpg
+    */
+    let image_loc = "src/images/setupFormattedTable.jpg";
+
     // Load the image from file
-    let img = image::open("src/images/formattedTable.jpg").unwrap();
+    let img = image::open(image_loc).unwrap();
     // Generate the grayscale image of var img
     let gray_scale = img_to_gray_scale(&img);
 
@@ -20,10 +30,7 @@ fn main() {
             
         }
         // Heatmap initialization
-        let white_threshold2: u8 = 0;
-        if pixel_luminocity[0] > white_threshold2 {
-            heat_image.put_pixel(x, y, image::Luma([0u8]));
-        }
+        heat_image.put_pixel(x, y, image::Luma([0u8]));
     }
 
     println!("Created black and white image");
@@ -39,6 +46,7 @@ fn main() {
     find_ball_from_heat_map(&heat_image);
 
     // Save the images to file
+    // TODO: Remove compression from the file to remove the jagged edges of the final image and to make the preditction more accurate
     heat_image.save("src/images/heat_image.jpg").unwrap();
     new_image.save("src/images/grayScale.jpg").unwrap();
 }
